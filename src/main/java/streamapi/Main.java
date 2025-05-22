@@ -73,8 +73,11 @@ public class Main {
      * @return An open {@link InputStream} for the resource file
      */
     private static InputStream getResourceAsStream(String path) {
-        // TODO
-        throw new UnsupportedOperationException();
+        InputStream stream = Main.class.getClassLoader().getResourceAsStream(path);
+        if (stream == null) {
+            throw new IllegalArgumentException("Resource cant be found: " + path);
+        }
+        return stream;
     }
 
     /**
@@ -89,6 +92,7 @@ public class Main {
      */
     public static String resources(String path) {
         // TODO
+        /*
         StringBuilder result = new StringBuilder();
 
         try (InputStream stream = getResourceAsStream(path)) {
@@ -102,6 +106,8 @@ public class Main {
                 newLine = r.readLine();
             }
 
+            
+
             for (int i = 1; i < allLines.size(); i++) {
                 String s = allLines.get(i);
                 if (s.startsWith("a") && !(s.length() < 2)) {
@@ -113,6 +119,19 @@ public class Main {
             System.err.println("Ouch, that didn't work: \n" + e.getMessage());
         }
 
-        return result.toString();
+        return result.toString(); 
+        */
+        
+        try (InputStream stream = getResourceAsStream(path);
+             BufferedReader r = new BufferedReader(new InputStreamReader(stream))) {
+
+            return r.lines()
+                .filter(s -> s.startsWith("a") && s.length() >= 2)
+                .collect(java.util.stream.Collectors.joining("\n")) + "\n";
+
+        } catch (IOException e) {
+            System.err.println("Ouch, that didn't work: \n" + e.getMessage());
+            return "";
+        }
     }
 }
