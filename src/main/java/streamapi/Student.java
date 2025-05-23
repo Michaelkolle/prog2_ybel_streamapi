@@ -17,6 +17,7 @@ public record Student(String name, int cps, Enrollment program) {
         this.cps = cps;
         this.program = program;
     }
+
     /**
      * Check if a student is enrolled in Computer Science.
      *
